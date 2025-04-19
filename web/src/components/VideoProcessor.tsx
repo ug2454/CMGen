@@ -5,12 +5,10 @@ import {
   Card,
   CardContent,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   InputLabel,
   OutlinedInput,
   Slider,
-  Switch,
   Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -58,7 +56,7 @@ export default function VideoProcessor({ onProcessingStart, onProcessingComplete
     formData.append('maxScenes', maxScenes.toString());
 
     try {
-      const response = await fetch('/api/detect', {
+      const response = await fetch('http://localhost:3000/api/detect', {
         method: 'POST',
         body: formData,
       });
@@ -110,7 +108,7 @@ export default function VideoProcessor({ onProcessingStart, onProcessingComplete
           <Typography gutterBottom>Scene Detection Threshold</Typography>
           <Slider
             value={threshold}
-            onChange={(_, value) => setThreshold(value as number)}
+            onChange={(_, value) => setThreshold(Array.isArray(value) ? value[0] : value)}
             min={0}
             max={1}
             step={0.1}
@@ -127,7 +125,7 @@ export default function VideoProcessor({ onProcessingStart, onProcessingComplete
           <Typography gutterBottom>Minimum Gap Between Scenes (seconds)</Typography>
           <Slider
             value={minGap}
-            onChange={(_, value) => setMinGap(value as number)}
+            onChange={(_, value) => setMinGap(Array.isArray(value) ? value[0] : value)}
             min={0}
             max={30}
             step={1}
@@ -141,7 +139,7 @@ export default function VideoProcessor({ onProcessingStart, onProcessingComplete
           <Typography gutterBottom>Minimum Scene Duration (seconds)</Typography>
           <Slider
             value={minDuration}
-            onChange={(_, value) => setMinDuration(value as number)}
+            onChange={(_, value) => setMinDuration(Array.isArray(value) ? value[0] : value)}
             min={0}
             max={60}
             step={1}
@@ -158,7 +156,7 @@ export default function VideoProcessor({ onProcessingStart, onProcessingComplete
               id="max-scenes"
               type="number"
               value={maxScenes}
-              onChange={(e) => setMaxScenes(parseInt(e.target.value) || 0)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMaxScenes(parseInt(e.target.value) || 0)}
               disabled={isProcessing}
             />
             <FormHelperText>

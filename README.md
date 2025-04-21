@@ -40,7 +40,7 @@ This will build both the frontend and backend, and create an example `chapters.j
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/cmgen.git
+git clone https://github.com/ug2454/cmgen.git
 cd cmgen
 ```
 
@@ -212,3 +212,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 MIT 
+
+## Images
+![image](https://github.com/user-attachments/assets/bdcc904f-9569-4b4e-a2ac-3a992459ebfe)
+![image](https://github.com/user-attachments/assets/479a93cc-f29b-4357-b01d-4d04c8c2097d)
+![image](https://github.com/user-attachments/assets/1425a642-1368-42fb-91d2-c5c311e0b7d7)
+

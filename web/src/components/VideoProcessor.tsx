@@ -56,7 +56,7 @@ export default function VideoProcessor({ onProcessingStart, onProcessingComplete
     formData.append('maxScenes', maxScenes.toString());
 
     try {
-      const response = await fetch('http://localhost:3000/api/detect', {
+      const response = await fetch('http://localhost:8080/api/detect', {
         method: 'POST',
         body: formData,
       });

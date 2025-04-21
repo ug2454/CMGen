@@ -1,0 +1,20 @@
+# Node.js
+node_modules
+npm-debug.log
+yarn-error.log
+web/node_modules
+web/build
+
+# Go
+vendor/
+build/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Other
+.git
+.github
+.vscode
+.idea 

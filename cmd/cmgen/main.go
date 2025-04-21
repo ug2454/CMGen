@@ -38,6 +38,7 @@ func main() {
 	var maxScenes int
 	var preserveDesc bool
 	var webMode bool
+	var draftFile string
 
 	var rootCmd = &cobra.Command{
 		Use:   "cmgen [video_file]",
@@ -62,22 +63,40 @@ func main() {
 				log.Fatalf("Video file not found: %s", videoPath)
 			}
 
-			// Create scene detector with specified parameters
-			detector := detector.NewSceneDetector(threshold, float64(minGap), float64(minDuration), maxScenes)
+			// Check if we should use a draft chapters file
+			if draftFile != "" {
+				// Use draft file as starting point
+				fmt.Printf("Using draft chapters from %s...\n", draftFile)
 
-			// Detect scenes
-			fmt.Printf("Processing video: %s\n", videoPath)
-			scenes, err := detector.DetectScenes(videoPath)
-			if err != nil {
-				log.Fatalf("Error detecting scenes: %v", err)
-			}
+				data, err := ioutil.ReadFile(draftFile)
+				if err != nil {
+					log.Fatalf("Error reading draft file: %v", err)
+				}
 
-			// Convert scenes to chapters
-			chapters = make([]Chapter, len(scenes))
-			for i, scene := range scenes {
-				chapters[i] = Chapter{
-					Timestamp: scene.Timestamp,
-					Title:     fmt.Sprintf("Chapter %d", i+1),
+				if err := json.Unmarshal(data, &chapters); err != nil {
+					log.Fatalf("Error parsing draft file: %v", err)
+				}
+
+				fmt.Printf("Loaded %d chapters from draft file\n", len(chapters))
+			} else {
+				// Detect scenes using FFmpeg
+				// Create scene detector with specified parameters
+				detector := detector.NewSceneDetector(threshold, float64(minGap), float64(minDuration), maxScenes)
+
+				// Detect scenes
+				fmt.Printf("Processing video: %s\n", videoPath)
+				scenes, err := detector.DetectScenes(videoPath)
+				if err != nil {
+					log.Fatalf("Error detecting scenes: %v", err)
+				}
+
+				// Convert scenes to chapters
+				chapters = make([]Chapter, len(scenes))
+				for i, scene := range scenes {
+					chapters[i] = Chapter{
+						Timestamp: scene.Timestamp,
+						Title:     fmt.Sprintf("Chapter %d", i+1),
+					}
 				}
 			}
 
@@ -87,7 +106,7 @@ func main() {
 				log.Fatalf("Error writing chapters to file: %v", err)
 			}
 
-			fmt.Printf("Detected %d scenes and wrote to %s\n", len(chapters), outputFile)
+			fmt.Printf("Generated %d chapters and wrote to %s\n", len(chapters), outputFile)
 
 			// Play notification sound
 			playNotificationSound()
@@ -100,6 +119,7 @@ func main() {
 	rootCmd.Flags().IntVarP(&minDuration, "min-duration", "d", 5, "Minimum scene duration in seconds")
 	rootCmd.Flags().IntVarP(&maxScenes, "max-scenes", "m", 30, "Maximum number of scenes to detect")
 	rootCmd.Flags().BoolVarP(&webMode, "web", "w", false, "Start web UI server")
+	rootCmd.Flags().StringVarP(&draftFile, "draft", "", "", "Use a draft chapters file instead of detecting scenes")
 
 	// Add YouTube command
 	var ytCmd = &cobra.Command{
@@ -204,7 +224,7 @@ func startWebServer() {
 	handler := corsMiddleware(http.DefaultServeMux)
 
 	fmt.Println("Starting web server...")
-	if err := http.ListenAndServe(":3000", handler); err != nil {
+	if err := http.ListenAndServe(":8080", handler); err != nil { // serving on port 8080
 		log.Fatalf("Error starting web server: %v", err)
 	}
 }

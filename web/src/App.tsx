@@ -28,7 +28,7 @@ export default function App() {
 
   const handleExport = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/export');
+      const response = await fetch('http://localhost:8080/api/export');
       if (!response.ok) throw new Error('Export failed');
 
       const blob = await response.blob();

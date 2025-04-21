@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  cmgen:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cmgen
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./videos:/videos
+      - ./credentials.json:/app/credentials.json:ro
+      - ./chapters:/app/chapters
+    restart: unless-stopped
+    environment:
+      - TZ=UTC
+    command: "--web"
+
+volumes:
+  videos:
+    driver: local
+  chapters:
+    driver: local 

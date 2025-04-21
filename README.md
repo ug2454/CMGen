@@ -1,4 +1,4 @@
-# Auto Chapter-Mark Generator
+# Auto Chapter-Mark Generator (CMGen)
 
 Automatically generate and edit chapter markers for your videos, with optional YouTube integration.
 
